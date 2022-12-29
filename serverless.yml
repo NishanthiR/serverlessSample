@@ -1,0 +1,105 @@
+service: dynamodbsample
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: ap-south-1
+  environment:
+    DYNAMODB_TABLE_NAME: sampleTable2
+
+# custom:
+#   postsTableName: posts-table-${self:provider.stage}
+
+plugins:
+  - serverless-iam-roles-per-function
+  - "@aws-sdk/client-dynamodb"
+  - "@aws-sdk/util-dynamodb"
+  
+functions:
+  getPost:
+    handler: api.getPost
+    name: get-post
+    memorySize: 128 
+    timeout: 5 
+    events:
+      - http:
+          path: post/{postId}
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:GetItem"
+        Resource: !GetAtt PostsTable.Arn
+  createPost:
+    handler: api.createPost
+    name: create-post
+    memorySize: 128 
+    timeout: 5 
+    events:
+      - http:
+          path: post
+          method: POST
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:PutItem"
+        Resource: !GetAtt PostsTable.Arn
+  updatePost:
+    handler: api.updatePost
+    name: update-post
+    memorySize: 128 
+    timeout: 5 
+    events:
+      - http:
+          path: post/{postId}
+          method: PUT
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:UpdateItem"
+        Resource: !GetAtt PostsTable.Arn
+  deletePost:
+    handler: api.deletePost
+    name: delete-post
+    memorySize: 128 
+    timeout: 5 
+    events:
+      - http:
+          path: post/{postId}
+          method: DELETE
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DeleteItem"
+        Resource: !GetAtt PostsTable.Arn
+  getAllPosts:
+    handler: api.getAllPosts
+    name: get-all-posts
+    memorySize: 128 
+    timeout: 5 
+    events:
+      - http:
+          path: posts
+          method: GET
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:Scan"
+        Resource: !GetAtt PostsTable.Arn
+
+resources:
+  Resources:
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: sampleTable2
+        AttributeDefinitions:
+          - AttributeName: stud_Id
+            AttributeType: "N"
+        KeySchema:
+          - AttributeName: stud_Id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 3
+          WriteCapacityUnits: 3

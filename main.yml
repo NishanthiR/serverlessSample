@@ -1,0 +1,27 @@
+name: Deploy DynamoDB CRUD 
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: windows
+
+    steps:
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: serverless deploy
+      uses: serverless
+      with:
+        args: deploy
+      env:
+        AWS_ACCESS_KEY_ID: AKIAQ7SRSXFEM32DV3N7
+        AWS_SECRET_ACCESS_KEY: 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
