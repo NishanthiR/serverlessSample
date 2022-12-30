@@ -23,5 +23,5 @@ jobs:
       with:
         args: deploy
       env:
-        AWS_ACCESS_KEY_ID: AKIAQ7SRSXFEM32DV3N7
-        AWS_SECRET_ACCESS_KEY: 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
+        AWS_ACCESS_KEY_ID:
+        AWS_SECRET_ACCESS_KEY:
